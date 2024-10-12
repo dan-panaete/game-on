@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+:root {
+    --primary-color: rgb(215, 206, 206);
+    --dark-color: black;
+}
+body {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: var(--primary-color);
+
+}
+.flex-row {
+    display: flex;
+}
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+.justify-around {
+    justify-content: space-around;
+}
