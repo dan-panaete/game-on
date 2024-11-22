@@ -19,17 +19,17 @@ function showCart() {
 		const item = cart[id];
 		cartItemsContainer.innerHTML += `
 			<div class="cart-item flex-row w-500 justify-between items-center border-bottom">
-  <img class="cart-item-image" width="50px" src="${item.image}" />
-  <span class="cart-item-name">${item.name}</span>
-  <span class="cart-item-price">${item.price} lei</span>
-  <div class="cart-item-quantity">
-    <button class="cart-item-btn decrease" data-id="${id}">-</button>
-    <span class="cart-item-quantity-value">${item.quantity}</span>
-    <button class="cart-item-btn increase" data-id="${id}">+</button>
-  </div>
-  <span class="cart-item-total">${(item.price * item.quantity).toFixed(2)} lei</span>
-  <button class="cart-item-btn delete" data-id="${id}">Sterge</button>
-</div>
+                <img class="cart-item-image" width="50px" src="${item.image}" />
+                <span class="cart-item-name">${item.name}</span>
+                <span class="cart-item-price">${item.price} lei</span>
+                <div class="cart-item-quantity">
+                    <button class="cart-item-btn decrease" data-id="${id}">-</button>
+                    <span class="cart-item-quantity-value">${item.quantity}</span>
+                    <button class="cart-item-btn increase" data-id="${id}">+</button>
+                </div>
+                <span class="cart-item-total">${(item.price * item.quantity).toFixed(2)} lei</span>
+                <button class="cart-item-btn delete" data-id="${id}">Sterge</button>
+            </div>
 
 		`;
 		total += item.price * item.quantity;
