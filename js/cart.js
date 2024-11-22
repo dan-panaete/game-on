@@ -1,83 +1,44 @@
 
-import {
-	getAllProducts,
-	updateProduct,
-	addNewProduct,
-	getProductById,
-	deleteProduct,
-} from '../api/products.js';
-import { mapProductToAdminTableRow } from '../utils/layout.js';
-
-const productsTableBody = document
-	.getElementById('products-table')
-	.querySelector('tbody');
-
-document.addEventListener('DOMContentLoaded', displayTableRows);
-
-async function displayTableRows() {
-	const products = await getAllProducts();
-
-	productsTableBody.innerHTML = products
-		.map(mapProductToAdminTableRow)
-		.join('');
-}
-
-// save new product
-const form = document.getElementById('product-form');
-const nameInput = document.getElementById('name');
-const priceInput = document.getElementById('price');
-const imageUrlInput = document.getElementById('image-url');
-const detailsInput = document.getElementById('details');
-const saveProductBtn = document.getElementById('save-btn');
-let currentEditableProductId;
-let editMode = false;
-
-saveProductBtn.addEventListener('click', saveProduct);
-
-async function saveProduct(event) {
-	event.preventDefault();
-
-	const product = {
-		name: nameInput.value,
-		price: Number(priceInput.value),
-		imageURL: imageUrlInput.value,
-		details: detailsInput.value,
-	};
-
-	if (editMode) {
-		const editedProduct = await updateProduct(
-			product,
-			currentEditableProductId
-		);
-		if (editedProduct !== null) {
-			form.reset();
-			await displayTableRows();
-			editMode = false;
-		}
-	} else {
-		const newProduct = await addNewProduct(product);
-		if (newProduct !== null) {
-			form.reset();
-			await displayTableRows();
-		}
+document.addEventListener('DOMContentLoaded', showCart);
+const cartItemsContainer = document.querySelector('.cart-items');
+const cartTotalContainer = document.querySelector('.cart-total');
+let cart;
+function showCart() {
+	cart = JSON.parse(localStorage.getItem('cart'));
+	let total = 0;
+	cartItemsContainer.innerHTML = '';
+	for (let id in cart) {
+		cartItemsContainer.innerHTML += `
+         <div class="flex-row w-500 justify-between items-center border-bottom">
+            <img width="50px" src=${cart[id].image} />
+            <span>${cart[id].name}</span>
+            <span>${cart[id].price} lei</span>
+            <div>
+               <button class="decrease" data-id=${id}>-</button>
+               <span>${cart[id].quantity}</span>
+               <button class="increase" data-id=${id}>+</button>
+            </div>
+            <span>${(cart[id].price * cart[id].quantity).toFixed(2)}lei</span>
+            <button class="delete" data-id=${id}>Sterge</button>
+         </div>
+      `;
+		total = total + cart[id].price * cart[id].quantity;
 	}
+	cartTotalContainer.innerHTML =
+		total === 0
+			? 'Cosul de cumparaturi este gol'
+			: `Total: ${total.toFixed(2)} lei`;
 }
-
-productsTableBody.addEventListener('click', handleActions);
-
-async function handleActions(event) {
-	if (event.target.classList.contains('edit-btn')) {
-		currentEditableProductId = event.target.getAttribute('data-productId');
-		const currentProduct = await getProductById(currentEditableProductId);
-
-		nameInput.value = currentProduct.name;
-		priceInput.value = currentProduct.price;
-		imageUrlInput.value = currentProduct.imageURL;
-		detailsInput.value = currentProduct.details;
-		editMode = true;
-	} else if (event.target.classList.contains('delete-btn')) {
-		const id = event.target.getAttribute('data-productId');
-		await deleteProduct(id);
-		await displayTableRows();
+cartItemsContainer.addEventListener('click', (event) => {
+	const btn = event.target;
+	const id = btn.getAttribute('data-id');
+	if (btn.classList.contains('increase')) {
+		cart[id].quantity++;
+	} else if (btn.classList.contains('decrease')) {
+		cart[id].quantity--;
+	} else if (btn.classList.contains('delete')) {
+		delete cart[id];
 	}
-}
+	localStorage.setItem('cart', JSON.stringify(cart));
+	showCart();
+});
