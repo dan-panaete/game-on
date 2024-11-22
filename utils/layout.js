@@ -10,7 +10,7 @@ export function mapProductToCard(product) {
                   </div>
                   <div class="price">${product.price} lei</div>
               </div>
-              <button class="add-to-cart">Adauga in cos</button>
+              <button class="add-to-cart" data-productId=${product.id}>Adauga in cos</button>
           </div>
       `;
   }
